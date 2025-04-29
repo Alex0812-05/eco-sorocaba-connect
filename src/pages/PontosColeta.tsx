@@ -8,42 +8,112 @@ import EcoCard from "@/components/EcoCard";
 const PontosColeta = () => {
   const [selectedPoint, setSelectedPoint] = useState<number | null>(null);
 
-  // Simulated collection points data
+  // Updated collection points data with FACENS campus buildings
   const collectionPoints = [
     {
       id: 1,
-      name: "Entrada Principal",
+      name: "Bloco A",
       type: "Recicláveis",
       description: "Ponto para papel, plástico, vidro e metal",
       position: { top: "30%", left: "50%" }
     },
     {
       id: 2,
-      name: "Bloco E",
+      name: "Bloco B",
       type: "Eletrônicos",
       description: "Ponto para pilhas, baterias e eletrônicos",
-      position: { top: "45%", left: "65%" }
+      position: { top: "35%", left: "55%" }
     },
     {
       id: 3,
-      name: "Cantina",
+      name: "Bloco C",
       type: "Orgânicos",
       description: "Ponto para resíduos orgânicos",
-      position: { top: "60%", left: "40%" }
+      position: { top: "40%", left: "45%" }
     },
     {
       id: 4,
-      name: "Biblioteca",
+      name: "Bloco D",
       type: "Papel",
       description: "Ponto especializado para papel e livros",
-      position: { top: "35%", left: "30%" }
+      position: { top: "45%", left: "40%" }
     },
     {
       id: 5,
-      name: "Laboratórios",
+      name: "Bloco E",
       type: "Químicos",
       description: "Ponto para resíduos laboratoriais",
-      position: { top: "55%", left: "70%" }
+      position: { top: "50%", left: "60%" }
+    },
+    {
+      id: 6,
+      name: "Bloco F",
+      type: "Recicláveis",
+      description: "Ponto para papel, plástico, vidro e metal",
+      position: { top: "35%", left: "65%" }
+    },
+    {
+      id: 7,
+      name: "Bloco G",
+      type: "Eletrônicos",
+      description: "Ponto para pilhas, baterias e eletrônicos",
+      position: { top: "45%", left: "70%" }
+    },
+    {
+      id: 8,
+      name: "Bloco H",
+      type: "Orgânicos",
+      description: "Ponto para resíduos orgânicos",
+      position: { top: "55%", left: "45%" }
+    },
+    {
+      id: 9,
+      name: "Bloco I",
+      type: "Papel",
+      description: "Ponto especializado para papel e livros",
+      position: { top: "60%", left: "50%" }
+    },
+    {
+      id: 10,
+      name: "Bloco J",
+      type: "Químicos",
+      description: "Ponto para resíduos laboratoriais",
+      position: { top: "65%", left: "55%" }
+    },
+    {
+      id: 11,
+      name: "Bloco K",
+      type: "Recicláveis",
+      description: "Ponto para papel, plástico, vidro e metal",
+      position: { top: "55%", left: "60%" }
+    },
+    {
+      id: 12,
+      name: "Bloco L",
+      type: "Eletrônicos",
+      description: "Ponto para pilhas, baterias e eletrônicos",
+      position: { top: "70%", left: "60%" }
+    },
+    {
+      id: 13,
+      name: "Refeitório",
+      type: "Orgânicos",
+      description: "Ponto para resíduos orgânicos",
+      position: { top: "50%", left: "30%" }
+    },
+    {
+      id: 14,
+      name: "Quadra",
+      type: "Recicláveis",
+      description: "Ponto para garrafas plásticas e embalagens",
+      position: { top: "65%", left: "30%" }
+    },
+    {
+      id: 15,
+      name: "Biblioteca",
+      type: "Papel",
+      description: "Ponto especializado para papel e livros",
+      position: { top: "40%", left: "35%" }
     }
   ];
 
