@@ -8,7 +8,7 @@ import EcoCard from "@/components/EcoCard";
 const PontosColeta = () => {
   const [selectedPoint, setSelectedPoint] = useState<number | null>(null);
 
-  // Updated collection points data with FACENS campus buildings
+  // Updated collection points data with all points set to "Recicláveis"
   const collectionPoints = [
     {
       id: 1,
@@ -20,29 +20,29 @@ const PontosColeta = () => {
     {
       id: 2,
       name: "Bloco B",
-      type: "Eletrônicos",
-      description: "Ponto para pilhas, baterias e eletrônicos",
+      type: "Recicláveis",
+      description: "Ponto para papel, plástico, vidro e metal",
       position: { top: "35%", left: "55%" }
     },
     {
       id: 3,
       name: "Bloco C",
-      type: "Orgânicos",
-      description: "Ponto para resíduos orgânicos",
+      type: "Recicláveis",
+      description: "Ponto para papel, plástico, vidro e metal",
       position: { top: "40%", left: "45%" }
     },
     {
       id: 4,
       name: "Bloco D",
-      type: "Papel",
-      description: "Ponto especializado para papel e livros",
+      type: "Recicláveis",
+      description: "Ponto para papel, plástico, vidro e metal",
       position: { top: "45%", left: "40%" }
     },
     {
       id: 5,
       name: "Bloco E",
-      type: "Químicos",
-      description: "Ponto para resíduos laboratoriais",
+      type: "Recicláveis",
+      description: "Ponto para papel, plástico, vidro e metal",
       position: { top: "50%", left: "60%" }
     },
     {
@@ -55,29 +55,29 @@ const PontosColeta = () => {
     {
       id: 7,
       name: "Bloco G",
-      type: "Eletrônicos",
-      description: "Ponto para pilhas, baterias e eletrônicos",
+      type: "Recicláveis",
+      description: "Ponto para papel, plástico, vidro e metal",
       position: { top: "45%", left: "70%" }
     },
     {
       id: 8,
       name: "Bloco H",
-      type: "Orgânicos",
-      description: "Ponto para resíduos orgânicos",
+      type: "Recicláveis",
+      description: "Ponto para papel, plástico, vidro e metal",
       position: { top: "55%", left: "45%" }
     },
     {
       id: 9,
       name: "Bloco I",
-      type: "Papel",
-      description: "Ponto especializado para papel e livros",
+      type: "Recicláveis",
+      description: "Ponto para papel, plástico, vidro e metal",
       position: { top: "60%", left: "50%" }
     },
     {
       id: 10,
       name: "Bloco J",
-      type: "Químicos",
-      description: "Ponto para resíduos laboratoriais",
+      type: "Recicláveis",
+      description: "Ponto para papel, plástico, vidro e metal",
       position: { top: "65%", left: "55%" }
     },
     {
@@ -90,29 +90,29 @@ const PontosColeta = () => {
     {
       id: 12,
       name: "Bloco L",
-      type: "Eletrônicos",
-      description: "Ponto para pilhas, baterias e eletrônicos",
+      type: "Recicláveis",
+      description: "Ponto para papel, plástico, vidro e metal",
       position: { top: "70%", left: "60%" }
     },
     {
       id: 13,
       name: "Refeitório",
-      type: "Orgânicos",
-      description: "Ponto para resíduos orgânicos",
+      type: "Recicláveis",
+      description: "Ponto para papel, plástico, vidro e metal",
       position: { top: "50%", left: "30%" }
     },
     {
       id: 14,
       name: "Quadra",
       type: "Recicláveis",
-      description: "Ponto para garrafas plásticas e embalagens",
+      description: "Ponto para papel, plástico, vidro e metal",
       position: { top: "65%", left: "30%" }
     },
     {
       id: 15,
       name: "Biblioteca",
-      type: "Papel",
-      description: "Ponto especializado para papel e livros",
+      type: "Recicláveis",
+      description: "Ponto para papel, plástico, vidro e metal",
       position: { top: "40%", left: "35%" }
     }
   ];
