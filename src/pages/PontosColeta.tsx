@@ -3,6 +3,7 @@ import { useState } from "react";
 import EcoHeader from "@/components/EcoHeader";
 import NavBar from "@/components/NavBar";
 import { MapPin, Info } from "lucide-react";
+import EcoCard from "@/components/EcoCard";
 
 const PontosColeta = () => {
   const [selectedPoint, setSelectedPoint] = useState<number | null>(null);
@@ -59,8 +60,13 @@ const PontosColeta = () => {
         
         {/* Map container */}
         <div className="relative bg-blue-50 border border-blue-100 h-80 rounded-xl overflow-hidden mb-6">
-          {/* This would be replaced with an actual map in a real implementation */}
-          <div className="w-full h-full bg-[url('https://images.unsplash.com/photo-1577086664693-894d8405334a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80')] bg-cover bg-center opacity-40">
+          {/* Updated to use the uploaded campus image */}
+          <div className="w-full h-full">
+            <img 
+              src="/lovable-uploads/acb32788-60d2-45e1-9da9-0e7125daecb0.png" 
+              alt="Mapa do Campus FACENS" 
+              className="w-full h-full object-cover"
+            />
           </div>
           
           {/* Map pins */}
@@ -95,22 +101,15 @@ const PontosColeta = () => {
         
         {/* Point details */}
         {selectedPoint && (
-          <div className="bg-white rounded-xl p-4 shadow-sm animate-fade-in mb-4">
-            <div className="flex justify-between items-start">
-              <div>
-                <h3 className="font-medium">
-                  {collectionPoints.find(p => p.id === selectedPoint)?.name}
-                </h3>
-                <p className="text-sm text-primary font-medium mt-1">
-                  Tipo: {collectionPoints.find(p => p.id === selectedPoint)?.type}
-                </p>
-              </div>
-              <Info size={20} className="text-gray-500" />
-            </div>
+          <EcoCard
+            title={collectionPoints.find(p => p.id === selectedPoint)?.name || ""}
+            description={`Tipo: ${collectionPoints.find(p => p.id === selectedPoint)?.type}`}
+            className="mb-4 animate-fade-in"
+          >
             <p className="text-gray-600 text-sm mt-3">
               {collectionPoints.find(p => p.id === selectedPoint)?.description}
             </p>
-          </div>
+          </EcoCard>
         )}
         
         {/* List view */}
