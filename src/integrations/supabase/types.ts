@@ -9,7 +9,71 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      users: {
+        Row: {
+          badges: number | null
+          correct_disposals: number | null
+          created_at: string | null
+          email: string | null
+          id: string
+          name: string
+          points: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          badges?: number | null
+          correct_disposals?: number | null
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          name: string
+          points?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          badges?: number | null
+          correct_disposals?: number | null
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          name?: string
+          points?: number | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      waste_disposals: {
+        Row: {
+          created_at: string | null
+          id: string
+          points_earned: number
+          user_id: string
+          waste_type: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          points_earned: number
+          user_id: string
+          waste_type: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          points_earned?: number
+          user_id?: string
+          waste_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "waste_disposals_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never

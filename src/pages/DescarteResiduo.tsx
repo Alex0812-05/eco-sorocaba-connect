@@ -1,10 +1,11 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import EcoHeader from "@/components/EcoHeader";
 import NavBar from "@/components/NavBar";
 import EcoButton from "@/components/EcoButton";
 import { Trash2, Check } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 type WasteType = {
   id: string;
@@ -12,11 +13,17 @@ type WasteType = {
   icon: JSX.Element;
   color: string;
   examples: string;
+  points: number; // Adicionando pontos para cada tipo de resíduo
 };
 
 const DescarteResiduo = () => {
   const [selectedType, setSelectedType] = useState<string | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [userInfo, setUserInfo] = useState({
+    id: "",
+    points: 0,
+    correctDisposals: 0,
+  });
   const { toast } = useToast();
   
   const wasteTypes: WasteType[] = [
@@ -25,64 +32,168 @@ const DescarteResiduo = () => {
       name: "Papel/Papelão",
       icon: <Trash2 size={24} />,
       color: "bg-blue-500",
-      examples: "Jornais, revistas, caixas, embalagens de papel"
+      examples: "Jornais, revistas, caixas, embalagens de papel",
+      points: 10
     },
     {
       id: "plastic",
       name: "Plástico",
       icon: <Trash2 size={24} />,
       color: "bg-red-500",
-      examples: "Garrafas, embalagens, sacolas plásticas"
+      examples: "Garrafas, embalagens, sacolas plásticas",
+      points: 15
     },
     {
       id: "glass",
       name: "Vidro",
       icon: <Trash2 size={24} />,
       color: "bg-green-500",
-      examples: "Garrafas, potes, frascos"
+      examples: "Garrafas, potes, frascos",
+      points: 20
     },
     {
       id: "metal",
       name: "Metal",
       icon: <Trash2 size={24} />,
       color: "bg-yellow-500",
-      examples: "Latas de alumínio, tampas, embalagens metálicas"
+      examples: "Latas de alumínio, tampas, embalagens metálicas",
+      points: 25
     },
     {
       id: "organic",
       name: "Orgânico",
       icon: <Trash2 size={24} />,
       color: "bg-secondary",
-      examples: "Restos de alimentos, cascas de frutas e legumes"
+      examples: "Restos de alimentos, cascas de frutas e legumes",
+      points: 5
     },
     {
       id: "electronic",
       name: "Eletrônico",
       icon: <Trash2 size={24} />,
       color: "bg-orange-500",
-      examples: "Pilhas, baterias, celulares, computadores"
+      examples: "Pilhas, baterias, celulares, computadores",
+      points: 30
     },
     {
       id: "hazardous",
       name: "Perigoso",
       icon: <Trash2 size={24} />,
       color: "bg-danger",
-      examples: "Produtos químicos, medicamentos vencidos"
+      examples: "Produtos químicos, medicamentos vencidos",
+      points: 15
     }
   ];
   
-  const handleDiscard = () => {
-    if (!selectedType) return;
+  // Buscar informações do usuário ao carregar o componente
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        // Por enquanto, vamos buscar o usuário padrão que criamos
+        const { data, error } = await supabase
+          .from('users')
+          .select('*')
+          .limit(1)
+          .single();
+          
+        if (error) {
+          console.error('Erro ao buscar usuário:', error);
+          return;
+        }
+        
+        if (data) {
+          setUserInfo({
+            id: data.id,
+            points: data.points,
+            correctDisposals: data.correct_disposals,
+          });
+        }
+      } catch (error) {
+        console.error('Erro:', error);
+      }
+    };
     
-    // In a real app, this would send data to backend
-    toast({
-      title: "Descarte registrado!",
-      description: "Você ganhou 15 pontos pela ação sustentável.",
-      duration: 5000,
-    });
+    fetchUserInfo();
+  }, []);
+  
+  const handleDiscard = async () => {
+    if (!selectedType || !userInfo.id) return;
     
-    setSelectedType(null);
-    setIsDialogOpen(false);
+    const wasteType = wasteTypes.find(type => type.id === selectedType);
+    if (!wasteType) return;
+    
+    const pointsEarned = wasteType.points;
+    
+    try {
+      // Registrar o descarte
+      const { error: disposalError } = await supabase
+        .from('waste_disposals')
+        .insert({
+          user_id: userInfo.id,
+          waste_type: selectedType,
+          points_earned: pointsEarned
+        });
+        
+      if (disposalError) {
+        console.error('Erro ao registrar descarte:', disposalError);
+        toast({
+          title: "Erro ao registrar descarte",
+          description: "Ocorreu um erro ao salvar seu descarte. Tente novamente.",
+          variant: "destructive",
+          duration: 5000,
+        });
+        return;
+      }
+      
+      // Atualizar os pontos do usuário
+      const newPoints = userInfo.points + pointsEarned;
+      const newDisposals = userInfo.correctDisposals + 1;
+      
+      const { error: updateError } = await supabase
+        .from('users')
+        .update({ 
+          points: newPoints,
+          correct_disposals: newDisposals,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', userInfo.id);
+        
+      if (updateError) {
+        console.error('Erro ao atualizar pontos:', updateError);
+        toast({
+          title: "Erro ao atualizar pontos",
+          description: "Ocorreu um erro ao atualizar sua pontuação. Tente novamente.",
+          variant: "destructive",
+          duration: 5000,
+        });
+        return;
+      }
+      
+      // Atualizar estado local
+      setUserInfo(prev => ({
+        ...prev,
+        points: newPoints,
+        correctDisposals: newDisposals
+      }));
+      
+      toast({
+        title: "Descarte registrado!",
+        description: `Você ganhou ${pointsEarned} pontos pela ação sustentável.`,
+        duration: 5000,
+      });
+      
+      setSelectedType(null);
+      setIsDialogOpen(false);
+      
+    } catch (error) {
+      console.error('Erro geral:', error);
+      toast({
+        title: "Erro inesperado",
+        description: "Ocorreu um erro inesperado. Tente novamente mais tarde.",
+        variant: "destructive",
+        duration: 5000,
+      });
+    }
   };
 
   return (
@@ -113,6 +224,7 @@ const DescarteResiduo = () => {
                 {type.icon}
               </div>
               <h3 className="font-medium text-sm">{type.name}</h3>
+              <p className="text-xs text-primary mt-1">{type.points} pts</p>
             </button>
           ))}
         </div>

@@ -1,20 +1,50 @@
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import NavBar from "@/components/NavBar";
 import EcoCard from "@/components/EcoCard";
 import { BookOpen, MapPin, Trash2, ChartBar, Award } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const Index = () => {
   const navigate = useNavigate();
   
-  // Simulate user data - in a real app this would come from backend
-  const userData = {
+  const [userData, setUserData] = useState({
     name: "Usuário",
-    points: 125,
-    correctDisposals: 8,
-    badges: 3,
-  };
+    points: 0,
+    correctDisposals: 0,
+    badges: 0,
+  });
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('users')
+          .select('*')
+          .limit(1)
+          .single();
+          
+        if (error) {
+          console.error('Erro ao buscar usuário:', error);
+          return;
+        }
+        
+        if (data) {
+          setUserData({
+            name: data.name || "Usuário",
+            points: data.points || 0,
+            correctDisposals: data.correct_disposals || 0,
+            badges: data.badges || 0,
+          });
+        }
+      } catch (error) {
+        console.error('Erro:', error);
+      }
+    };
+    
+    fetchUserData();
+  }, []);
 
   const sections = [
     { 

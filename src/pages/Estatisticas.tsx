@@ -1,75 +1,213 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import EcoHeader from "@/components/EcoHeader";
 import NavBar from "@/components/NavBar";
 import { Award, TrendingUp, Check } from "lucide-react";
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip } from "recharts";
-
-// Demo data - in a real app this would come from a backend
-const disposalData = [
-  { name: "Papel", value: 12, color: "#4299E1" },
-  { name: "Plástico", value: 8, color: "#F56565" },
-  { name: "Vidro", value: 5, color: "#48BB78" },
-  { name: "Metal", value: 3, color: "#ECC94B" },
-  { name: "Orgânico", value: 7, color: "#1E8A70" },
-  { name: "Eletrônico", value: 2, color: "#ED8936" }
-];
-
-const weeklyData = [
-  { name: "Seg", disposals: 3 },
-  { name: "Ter", disposals: 2 },
-  { name: "Qua", disposals: 4 },
-  { name: "Qui", disposals: 1 },
-  { name: "Sex", disposals: 5 },
-  { name: "Sab", disposals: 3 },
-  { name: "Dom", disposals: 2 }
-];
-
-const achievements = [
-  { 
-    id: 1, 
-    name: "Iniciante Verde", 
-    description: "Registrou seus primeiros 5 descartes", 
-    completed: true,
-    points: 50
-  },
-  { 
-    id: 2, 
-    name: "Coletor de Plásticos", 
-    description: "Descartou 10 itens plásticos corretamente", 
-    completed: true,
-    points: 75
-  },
-  { 
-    id: 3, 
-    name: "Amigo do Papel", 
-    description: "Descartou 15 itens de papel corretamente", 
-    completed: false,
-    progress: 12,
-    total: 15,
-    points: 100
-  },
-  { 
-    id: 4, 
-    name: "Mestre da Reciclagem", 
-    description: "Atingiu 50 descartes corretos no total", 
-    completed: false,
-    progress: 37,
-    total: 50,
-    points: 200
-  }
-];
+import { supabase } from "@/integrations/supabase/client";
 
 const Estatisticas = () => {
   const [activeTab, setActiveTab] = useState<"stats" | "achievements">("stats");
-  
-  // Demo user stats
-  const userStats = {
-    totalDisposals: 37,
-    totalPoints: 125,
+  const [userStats, setUserStats] = useState({
+    totalDisposals: 0,
+    totalPoints: 0,
     rank: "Reciclador Iniciante",
-    level: 2
-  };
+    level: 1
+  });
+  const [disposalData, setDisposalData] = useState([
+    { name: "Papel", value: 0, color: "#4299E1" },
+    { name: "Plástico", value: 0, color: "#F56565" },
+    { name: "Vidro", value: 0, color: "#48BB78" },
+    { name: "Metal", value: 0, color: "#ECC94B" },
+    { name: "Orgânico", value: 0, color: "#1E8A70" },
+    { name: "Eletrônico", value: 0, color: "#ED8936" },
+    { name: "Perigoso", value: 0, color: "#E53E3E" }
+  ]);
+  
+  // Dados demo para gráfico semanal e conquistas
+  const [weeklyData, setWeeklyData] = useState([
+    { name: "Seg", disposals: 0 },
+    { name: "Ter", disposals: 0 },
+    { name: "Qua", disposals: 0 },
+    { name: "Qui", disposals: 0 },
+    { name: "Sex", disposals: 0 },
+    { name: "Sab", disposals: 0 },
+    { name: "Dom", disposals: 0 }
+  ]);
+  
+  const achievements = [
+    { 
+      id: 1, 
+      name: "Iniciante Verde", 
+      description: "Registrou seus primeiros 5 descartes", 
+      completed: false,
+      progress: 0,
+      total: 5,
+      points: 50
+    },
+    { 
+      id: 2, 
+      name: "Coletor de Plásticos", 
+      description: "Descartou 10 itens plásticos corretamente", 
+      completed: false,
+      progress: 0,
+      total: 10,
+      points: 75
+    },
+    { 
+      id: 3, 
+      name: "Amigo do Papel", 
+      description: "Descartou 15 itens de papel corretamente", 
+      completed: false,
+      progress: 0,
+      total: 15,
+      points: 100
+    },
+    { 
+      id: 4, 
+      name: "Mestre da Reciclagem", 
+      description: "Atingiu 50 descartes corretos no total", 
+      completed: false,
+      progress: 0,
+      total: 50,
+      points: 200
+    }
+  ];
+  
+  const [achievementsList, setAchievementsList] = useState(achievements);
+  
+  useEffect(() => {
+    const fetchUserStats = async () => {
+      try {
+        // Buscar usuário
+        const { data: userData, error: userError } = await supabase
+          .from('users')
+          .select('*')
+          .limit(1)
+          .single();
+          
+        if (userError) {
+          console.error('Erro ao buscar usuário:', userError);
+          return;
+        }
+        
+        if (userData) {
+          // Calcular nível com base nos pontos
+          const level = Math.floor(userData.points / 100) + 1;
+          let rank = "Reciclador Iniciante";
+          
+          if (userData.points >= 500) rank = "Reciclador Expert";
+          else if (userData.points >= 300) rank = "Reciclador Avançado";
+          else if (userData.points >= 100) rank = "Reciclador Intermediário";
+          
+          setUserStats({
+            totalDisposals: userData.correct_disposals || 0,
+            totalPoints: userData.points || 0,
+            rank,
+            level
+          });
+          
+          // Buscar descartes
+          const { data: disposalsData, error: disposalsError } = await supabase
+            .from('waste_disposals')
+            .select('*')
+            .eq('user_id', userData.id);
+            
+          if (disposalsError) {
+            console.error('Erro ao buscar descartes:', disposalsError);
+            return;
+          }
+          
+          if (disposalsData) {
+            // Atualizar gráfico de tipos de resíduos
+            const typeCountMap: Record<string, number> = {};
+            const wasteTypeMap: Record<string, string> = {
+              paper: "Papel",
+              plastic: "Plástico",
+              glass: "Vidro",
+              metal: "Metal",
+              organic: "Orgânico",
+              electronic: "Eletrônico",
+              hazardous: "Perigoso"
+            };
+            
+            // Contar descartes por tipo
+            disposalsData.forEach(disposal => {
+              const typeName = wasteTypeMap[disposal.waste_type] || disposal.waste_type;
+              typeCountMap[typeName] = (typeCountMap[typeName] || 0) + 1;
+            });
+            
+            // Atualizar dados do gráfico
+            const updatedDisposalData = disposalData.map(item => ({
+              ...item,
+              value: typeCountMap[item.name] || 0
+            }));
+            
+            setDisposalData(updatedDisposalData);
+            
+            // Atualizar dados semanais (simplificado - distribuindo aleatoriamente)
+            const weekDays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab'];
+            const today = new Date().getDay();
+            
+            // Distribuir descartes nos últimos 7 dias com valores mais altos para dias mais recentes
+            const tempWeeklyData = [...weeklyData];
+            for (let i = 0; i < disposalsData.length && i < 20; i++) {
+              const dayIndex = (today - i % 7 + 7) % 7;
+              const dayName = weekDays[dayIndex];
+              const dayData = tempWeeklyData.find(d => d.name === dayName);
+              if (dayData) {
+                dayData.disposals += 1;
+              }
+            }
+            
+            setWeeklyData(tempWeeklyData);
+            
+            // Atualizar conquistas
+            const paperCount = typeCountMap["Papel"] || 0;
+            const plasticCount = typeCountMap["Plástico"] || 0;
+            const totalCount = disposalsData.length;
+            
+            const updatedAchievements = achievements.map(achievement => {
+              switch (achievement.id) {
+                case 1: // Iniciante Verde
+                  return {
+                    ...achievement,
+                    progress: Math.min(totalCount, achievement.total),
+                    completed: totalCount >= achievement.total
+                  };
+                case 2: // Coletor de Plásticos
+                  return {
+                    ...achievement,
+                    progress: Math.min(plasticCount, achievement.total),
+                    completed: plasticCount >= achievement.total
+                  };
+                case 3: // Amigo do Papel
+                  return {
+                    ...achievement,
+                    progress: Math.min(paperCount, achievement.total),
+                    completed: paperCount >= achievement.total
+                  };
+                case 4: // Mestre da Reciclagem
+                  return {
+                    ...achievement,
+                    progress: Math.min(totalCount, achievement.total),
+                    completed: totalCount >= achievement.total
+                  };
+                default:
+                  return achievement;
+              }
+            });
+            
+            setAchievementsList(updatedAchievements);
+          }
+        }
+      } catch (error) {
+        console.error('Erro geral:', error);
+      }
+    };
+    
+    fetchUserStats();
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
@@ -133,7 +271,7 @@ const Estatisticas = () => {
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <Pie
-                      data={disposalData}
+                      data={disposalData.filter(d => d.value > 0)}
                       cx="50%"
                       cy="50%"
                       labelLine={false}
@@ -172,7 +310,7 @@ const Estatisticas = () => {
                 <div>
                   <h3 className="font-medium text-secondary">Seu Impacto</h3>
                   <p className="text-sm mt-1">
-                    Seus descartes corretos ajudaram a evitar aproximadamente 12kg de resíduos em aterros sanitários.
+                    Seus descartes corretos ajudaram a evitar aproximadamente {userStats.totalDisposals * 0.3}kg de resíduos em aterros sanitários.
                   </p>
                 </div>
               </div>
@@ -183,7 +321,7 @@ const Estatisticas = () => {
             <h3 className="font-medium mb-3">Suas Conquistas</h3>
             
             <div className="flex flex-col gap-3">
-              {achievements.map((achievement) => (
+              {achievementsList.map((achievement) => (
                 <div 
                   key={achievement.id}
                   className={`p-4 rounded-xl border ${
