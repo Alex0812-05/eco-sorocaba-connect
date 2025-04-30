@@ -97,7 +97,7 @@ const Index = () => {
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-2xl font-bold">Olá, {userData.name}!</h1>
-            <p className="opacity-90 mt-1">Bem-vindo ao Eco Sorocaba</p>
+            <p className="opacity-90 mt-1">Bem-vindo à Coleta Seletiva Facens</p>
           </div>
           <div className="bg-white bg-opacity-20 p-3 rounded-full">
             <Award size={28} className="text-white" />
