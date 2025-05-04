@@ -104,7 +104,7 @@ const Index = () => {
             <img 
               src="/public/lovable-uploads/85ff4149-89f6-4c10-94ff-c436f6800e69.png" 
               alt="SeleCollect Logo" 
-              className="h-8 w-8" 
+              className="h-10 w-10" 
             />
           </div>
         </div>

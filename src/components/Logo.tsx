@@ -3,7 +3,7 @@ import React from "react";
 
 interface LogoProps {
   className?: string;
-  size?: "sm" | "md" | "lg";
+  size?: "sm" | "md" | "lg" | "xl";
   showText?: boolean;
 }
 
@@ -11,7 +11,8 @@ const Logo: React.FC<LogoProps> = ({ className = "", size = "md", showText = tru
   const sizeClasses = {
     sm: "h-6",
     md: "h-8",
-    lg: "h-12"
+    lg: "h-12",
+    xl: "h-16"
   };
 
   return (
@@ -21,7 +22,7 @@ const Logo: React.FC<LogoProps> = ({ className = "", size = "md", showText = tru
         alt="SeleCollect Logo" 
         className={`${sizeClasses[size]}`} 
       />
-      {showText && <span className="ml-2 font-bold text-primary">SeleCollect</span>}
+      {showText && <span className={`ml-2 font-bold text-primary ${size === "lg" || size === "xl" ? "text-xl" : ""}`}>SeleCollect</span>}
     </div>
   );
 };

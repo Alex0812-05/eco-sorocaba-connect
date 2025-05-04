@@ -41,7 +41,7 @@ const Onboarding = () => {
           <img 
             src="/public/lovable-uploads/85ff4149-89f6-4c10-94ff-c436f6800e69.png" 
             alt="SeleCollect Logo" 
-            className="h-12 w-12" 
+            className="h-16 w-16" 
           />
         </div>
         <h1 className="text-3xl font-bold text-center">SeleCollect</h1>
