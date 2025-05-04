@@ -2,7 +2,7 @@
 import { BookOpen, MapPin, Trash2, ChartBar } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import EcoButton from "@/components/EcoButton";
-import { Leaf } from "lucide-react";
+import Logo from "@/components/Logo";
 
 const Onboarding = () => {
   const navigate = useNavigate();
@@ -38,9 +38,13 @@ const Onboarding = () => {
     <div className="min-h-screen bg-gray-50 px-4 py-8 flex flex-col">
       <div className="flex flex-col items-center mb-10 animate-fade-in">
         <div className="bg-primary rounded-full p-6 mb-4">
-          <Leaf size={48} className="text-white" />
+          <img 
+            src="/public/lovable-uploads/85ff4149-89f6-4c10-94ff-c436f6800e69.png" 
+            alt="SeleCollect Logo" 
+            className="h-12 w-12" 
+          />
         </div>
-        <h1 className="text-3xl font-bold text-center">Eco Sorocaba</h1>
+        <h1 className="text-3xl font-bold text-center">SeleCollect</h1>
         <p className="text-gray-600 text-center mt-2">
           Sustentabilidade e descarte correto ao seu alcance
         </p>

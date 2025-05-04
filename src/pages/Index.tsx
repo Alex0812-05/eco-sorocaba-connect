@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import NavBar from "@/components/NavBar";
 import EcoCard from "@/components/EcoCard";
+import Logo from "@/components/Logo";
 import { BookOpen, MapPin, Trash2, ChartBar, Award } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -97,10 +98,14 @@ const Index = () => {
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-2xl font-bold">Olá, {userData.name}!</h1>
-            <p className="opacity-90 mt-1">Bem-vindo à Coleta Seletiva Facens</p>
+            <p className="opacity-90 mt-1">Bem-vindo ao SeleCollect</p>
           </div>
           <div className="bg-white bg-opacity-20 p-3 rounded-full">
-            <Award size={28} className="text-white" />
+            <img 
+              src="/public/lovable-uploads/85ff4149-89f6-4c10-94ff-c436f6800e69.png" 
+              alt="SeleCollect Logo" 
+              className="h-8 w-8" 
+            />
           </div>
         </div>
         
