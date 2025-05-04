@@ -18,7 +18,7 @@ const Logo: React.FC<LogoProps> = ({ className = "", size = "md", showText = tru
   return (
     <div className={`flex items-center ${className}`}>
       <img 
-        src="/public/lovable-uploads/85ff4149-89f6-4c10-94ff-c436f6800e69.png" 
+        src="/lovable-uploads/85ff4149-89f6-4c10-94ff-c436f6800e69.png" 
         alt="SeleCollect Logo" 
         className={`${sizeClasses[size]}`} 
       />

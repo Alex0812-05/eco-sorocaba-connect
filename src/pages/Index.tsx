@@ -102,7 +102,7 @@ const Index = () => {
           </div>
           <div className="bg-white bg-opacity-20 p-3 rounded-full">
             <img 
-              src="/public/lovable-uploads/85ff4149-89f6-4c10-94ff-c436f6800e69.png" 
+              src="/lovable-uploads/85ff4149-89f6-4c10-94ff-c436f6800e69.png" 
               alt="SeleCollect Logo" 
               className="h-16 w-16" 
             />

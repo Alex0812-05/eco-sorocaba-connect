@@ -39,7 +39,7 @@ const Onboarding = () => {
       <div className="flex flex-col items-center mb-10 animate-fade-in">
         <div className="bg-primary rounded-full p-6 mb-4">
           <img 
-            src="/public/lovable-uploads/85ff4149-89f6-4c10-94ff-c436f6800e69.png" 
+            src="/lovable-uploads/85ff4149-89f6-4c10-94ff-c436f6800e69.png" 
             alt="SeleCollect Logo" 
             className="h-24 w-24" 
           />
