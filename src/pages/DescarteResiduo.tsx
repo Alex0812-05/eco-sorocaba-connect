@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import EcoHeader from "@/components/EcoHeader";
 import NavBar from "@/components/NavBar";
@@ -220,8 +219,9 @@ const DescarteResiduo = () => {
               }`}
               onClick={() => setSelectedType(type.id)}
             >
-              <div className={`${type.color} rounded-full p-2 flex items-center justify-center mb-2`}>
-                {type.icon}
+              {/* Aqui removemos o fundo quadrado e mantemos apenas o ícone com a cor apropriada */}
+              <div className={`text-${type.color.substring(3)} mb-2`}>
+                <Trash2 size={30} />
               </div>
               <h3 className="font-medium text-sm">{type.name}</h3>
               <p className="text-xs text-primary mt-1">{type.points} pts</p>
