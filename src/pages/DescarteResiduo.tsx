@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import EcoHeader from "@/components/EcoHeader";
 import NavBar from "@/components/NavBar";
@@ -13,6 +14,7 @@ type WasteType = {
   color: string;
   examples: string;
   points: number;
+  backgroundColor: string;
 };
 
 const DescarteResiduo = () => {
@@ -31,6 +33,7 @@ const DescarteResiduo = () => {
       name: "Papel/Papelão",
       icon: <Trash2 size={24} className="text-white" />,
       color: "bg-blue-500",
+      backgroundColor: "bg-[#F2FCE2]",
       examples: "Jornais, revistas, caixas, embalagens de papel",
       points: 10
     },
@@ -39,6 +42,7 @@ const DescarteResiduo = () => {
       name: "Plástico",
       icon: <Trash2 size={24} className="text-white" />,
       color: "bg-red-500",
+      backgroundColor: "bg-[#F2FCE2]",
       examples: "Garrafas, embalagens, sacolas plásticas",
       points: 15
     },
@@ -47,6 +51,7 @@ const DescarteResiduo = () => {
       name: "Vidro",
       icon: <Trash2 size={24} className="text-white" />,
       color: "bg-green-500",
+      backgroundColor: "bg-[#F2FCE2]",
       examples: "Garrafas, potes, frascos",
       points: 20
     },
@@ -55,6 +60,7 @@ const DescarteResiduo = () => {
       name: "Metal",
       icon: <Trash2 size={24} className="text-white" />,
       color: "bg-yellow-500",
+      backgroundColor: "bg-[#F2FCE2]",
       examples: "Latas de alumínio, tampas, embalagens metálicas",
       points: 25
     },
@@ -63,6 +69,7 @@ const DescarteResiduo = () => {
       name: "Orgânico",
       icon: <Trash2 size={24} className="text-white" />,
       color: "bg-secondary",
+      backgroundColor: "bg-[#F2FCE2]",
       examples: "Restos de alimentos, cascas de frutas e legumes",
       points: 5
     },
@@ -71,6 +78,7 @@ const DescarteResiduo = () => {
       name: "Eletrônico",
       icon: <Trash2 size={24} className="text-white" />,
       color: "bg-orange-500",
+      backgroundColor: "bg-[#F2FCE2]",
       examples: "Pilhas, baterias, celulares, computadores",
       points: 30
     },
@@ -79,6 +87,7 @@ const DescarteResiduo = () => {
       name: "Perigoso",
       icon: <Trash2 size={24} className="text-white" />,
       color: "bg-danger",
+      backgroundColor: "bg-[#F2FCE2]",
       examples: "Produtos químicos, medicamentos vencidos",
       points: 15
     }
@@ -219,9 +228,11 @@ const DescarteResiduo = () => {
               }`}
               onClick={() => setSelectedType(type.id)}
             >
-              {/* Aqui removemos o fundo quadrado e mantemos apenas o ícone com a cor apropriada */}
-              <div className={`text-${type.color.substring(3)} mb-2`}>
-                <Trash2 size={30} />
+              {/* Círculo com fundo bege claro (#F2FCE2) e ícone colorido */}
+              <div className={`${type.backgroundColor} rounded-full p-3 mb-2 flex items-center justify-center`}>
+                <div className={`text-${type.color.substring(3)}`}>
+                  <Trash2 size={24} />
+                </div>
               </div>
               <h3 className="font-medium text-sm">{type.name}</h3>
               <p className="text-xs text-primary mt-1">{type.points} pts</p>
