@@ -13,7 +13,7 @@ type WasteType = {
   icon: JSX.Element;
   color: string;
   examples: string;
-  points: number; // Adicionando pontos para cada tipo de resíduo
+  points: number;
 };
 
 const DescarteResiduo = () => {
@@ -30,7 +30,7 @@ const DescarteResiduo = () => {
     {
       id: "paper",
       name: "Papel/Papelão",
-      icon: <Trash2 size={24} />,
+      icon: <Trash2 size={24} className="text-white" />,
       color: "bg-blue-500",
       examples: "Jornais, revistas, caixas, embalagens de papel",
       points: 10
@@ -38,7 +38,7 @@ const DescarteResiduo = () => {
     {
       id: "plastic",
       name: "Plástico",
-      icon: <Trash2 size={24} />,
+      icon: <Trash2 size={24} className="text-white" />,
       color: "bg-red-500",
       examples: "Garrafas, embalagens, sacolas plásticas",
       points: 15
@@ -46,7 +46,7 @@ const DescarteResiduo = () => {
     {
       id: "glass",
       name: "Vidro",
-      icon: <Trash2 size={24} />,
+      icon: <Trash2 size={24} className="text-white" />,
       color: "bg-green-500",
       examples: "Garrafas, potes, frascos",
       points: 20
@@ -54,7 +54,7 @@ const DescarteResiduo = () => {
     {
       id: "metal",
       name: "Metal",
-      icon: <Trash2 size={24} />,
+      icon: <Trash2 size={24} className="text-white" />,
       color: "bg-yellow-500",
       examples: "Latas de alumínio, tampas, embalagens metálicas",
       points: 25
@@ -62,7 +62,7 @@ const DescarteResiduo = () => {
     {
       id: "organic",
       name: "Orgânico",
-      icon: <Trash2 size={24} />,
+      icon: <Trash2 size={24} className="text-white" />,
       color: "bg-secondary",
       examples: "Restos de alimentos, cascas de frutas e legumes",
       points: 5
@@ -70,7 +70,7 @@ const DescarteResiduo = () => {
     {
       id: "electronic",
       name: "Eletrônico",
-      icon: <Trash2 size={24} />,
+      icon: <Trash2 size={24} className="text-white" />,
       color: "bg-orange-500",
       examples: "Pilhas, baterias, celulares, computadores",
       points: 30
@@ -78,7 +78,7 @@ const DescarteResiduo = () => {
     {
       id: "hazardous",
       name: "Perigoso",
-      icon: <Trash2 size={24} />,
+      icon: <Trash2 size={24} className="text-white" />,
       color: "bg-danger",
       examples: "Produtos químicos, medicamentos vencidos",
       points: 15
@@ -220,7 +220,7 @@ const DescarteResiduo = () => {
               }`}
               onClick={() => setSelectedType(type.id)}
             >
-              <div className={`${type.color} text-white p-3 rounded-full mb-2`}>
+              <div className={`${type.color} rounded-full p-2 flex items-center justify-center mb-2`}>
                 {type.icon}
               </div>
               <h3 className="font-medium text-sm">{type.name}</h3>
