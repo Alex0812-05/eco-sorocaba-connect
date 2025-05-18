@@ -1,73 +1,22 @@
-# Welcome to your Lovable project
+feat: implementação inicial do site Eco Sorocaba Connect com explicação passo a passo
 
-## Project info
+- Configuração do ambiente do projeto:
+  Preparação das dependências necessárias (bibliotecas, frameworks) e estrutura de pastas para organizar os arquivos do site.
 
-**URL**: https://lovable.dev/projects/d1fd3ead-2a33-4ca1-a106-e1e5426de8e7
+- Criação da página inicial:
+  Desenvolvimento do layout básico da página principal, garantindo que seja responsivo para funcionar bem em celulares e desktops.
 
-## How can I edit this code?
+- Desenvolvimento dos componentes visuais:
+  Construção dos elementos principais da interface, como o cabeçalho (menu de navegação), rodapé e as seções que exibem conteúdos importantes para o usuário.
 
-There are several ways of editing your application.
+- Integração com API:
+  Implementação da comunicação com serviços externos para carregar dados dinâmicos no site, permitindo que o conteúdo seja atualizado automaticamente.
 
-**Use Lovable**
+- Aplicação de estilos CSS:
+  Definição das cores, fontes, espaçamentos e outros detalhes visuais para manter a identidade visual alinhada com a marca Eco Sorocaba Connect.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/d1fd3ead-2a33-4ca1-a106-e1e5426de8e7) and start prompting.
+- Preparação para deploy:
+  Configuração inicial para que o site possa ser publicado em ambiente de produção, incluindo otimizações e scripts de build.
 
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/d1fd3ead-2a33-4ca1-a106-e1e5426de8e7) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+- Inclusão de arquivos estáticos:
+  Adição de imagens, ícones e outros recursos de mídia necessários para compor a interface do site.
