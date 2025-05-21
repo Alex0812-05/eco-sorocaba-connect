@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
@@ -30,11 +30,21 @@ const Login = () => {
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: "1234", // Pre-filled with "1234"
-      password: "1234", // Pre-filled with "1234"
+      email: "240000", // Default to student RA
+      password: "1234",
       userType: "aluno",
     },
   });
+
+  // Update the default RA based on the selected user type
+  useEffect(() => {
+    const userType = form.watch("userType");
+    if (userType === "aluno") {
+      form.setValue("email", "240000");
+    } else {
+      form.setValue("email", "249098");
+    }
+  }, [form.watch("userType")]);
 
   const onSubmit = async (values: LoginFormValues) => {
     setLoading(true);
@@ -135,6 +145,32 @@ const Login = () => {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={form.control}
+              name="userType"
+              render={({ field }) => (
+                <FormItem className="space-y-3">
+                  <FormLabel>Tipo de Usuário</FormLabel>
+                  <FormControl>
+                    <RadioGroup
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                      className="flex space-x-4"
+                    >
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="aluno" id="aluno" />
+                        <Label htmlFor="aluno">Aluno</Label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="funcionario" id="funcionario" />
+                        <Label htmlFor="funcionario">Funcionário</Label>
+                      </div>
+                    </RadioGroup>
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
               name="email"
               render={({ field }) => (
                 <FormItem>
@@ -162,32 +198,6 @@ const Login = () => {
                       placeholder="******"
                       {...field}
                     />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="userType"
-              render={({ field }) => (
-                <FormItem className="space-y-3">
-                  <FormLabel>Tipo de Usuário</FormLabel>
-                  <FormControl>
-                    <RadioGroup
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                      className="flex space-x-4"
-                    >
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="aluno" id="aluno" />
-                        <Label htmlFor="aluno">Aluno</Label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="funcionario" id="funcionario" />
-                        <Label htmlFor="funcionario">Funcionário</Label>
-                      </div>
-                    </RadioGroup>
                   </FormControl>
                 </FormItem>
               )}
