@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { WasteType } from "@/components/waste/WasteData";
+import { useNavigate } from "react-router-dom";
 
 export const useWasteDisposal = () => {
   const [selectedType, setSelectedType] = useState<string | null>(null);
@@ -13,16 +14,46 @@ export const useWasteDisposal = () => {
     correctDisposals: 0,
   });
   const { toast } = useToast();
+  const navigate = useNavigate();
+
+  // Verificar se o usuário está logado
+  useEffect(() => {
+    const userJson = localStorage.getItem("user");
+    
+    if (!userJson) {
+      toast({
+        title: "Não autenticado",
+        description: "Você precisa fazer login para continuar.",
+        variant: "destructive",
+      });
+      navigate("/login");
+      return;
+    }
+    
+    try {
+      const user = JSON.parse(userJson);
+      setUserInfo({
+        id: user.id,
+        points: user.points || 0,
+        correctDisposals: user.correctDisposals || 0,
+      });
+    } catch (error) {
+      console.error("Erro ao parsear dados do usuário:", error);
+      navigate("/login");
+    }
+  }, [navigate, toast]);
 
   // Buscar informações do usuário ao carregar o componente
   useEffect(() => {
     const fetchUserInfo = async () => {
+      if (!userInfo.id) return;
+      
       try {
-        // Por enquanto, vamos buscar o usuário padrão que criamos
+        // Buscar dados atualizados do usuário
         const { data, error } = await supabase
           .from('users')
           .select('*')
-          .limit(1)
+          .eq('id', userInfo.id)
           .single();
           
         if (error) {
@@ -33,9 +64,18 @@ export const useWasteDisposal = () => {
         if (data) {
           setUserInfo({
             id: data.id,
-            points: data.points,
-            correctDisposals: data.correct_disposals,
+            points: data.points || 0,
+            correctDisposals: data.correct_disposals || 0,
           });
+          
+          // Atualizar os dados do usuário no localStorage
+          const userJson = localStorage.getItem("user");
+          if (userJson) {
+            const user = JSON.parse(userJson);
+            user.points = data.points || 0;
+            user.correctDisposals = data.correct_disposals || 0;
+            localStorage.setItem("user", JSON.stringify(user));
+          }
         }
       } catch (error) {
         console.error('Erro:', error);
@@ -43,10 +83,18 @@ export const useWasteDisposal = () => {
     };
     
     fetchUserInfo();
-  }, []);
+  }, [userInfo.id]);
 
   const handleDiscard = async (wasteType: WasteType) => {
-    if (!userInfo.id) return;
+    if (!userInfo.id) {
+      toast({
+        title: "Não autenticado",
+        description: "Você precisa fazer login para continuar.",
+        variant: "destructive",
+      });
+      navigate("/login");
+      return;
+    }
     
     const pointsEarned = wasteType.points;
     
@@ -101,6 +149,15 @@ export const useWasteDisposal = () => {
         points: newPoints,
         correctDisposals: newDisposals
       }));
+      
+      // Atualizar os dados do usuário no localStorage
+      const userJson = localStorage.getItem("user");
+      if (userJson) {
+        const user = JSON.parse(userJson);
+        user.points = newPoints;
+        user.correctDisposals = newDisposals;
+        localStorage.setItem("user", JSON.stringify(user));
+      }
       
       toast({
         title: "Descarte registrado!",

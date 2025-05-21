@@ -9,6 +9,41 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      auth_credentials: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          password: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          password: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          password?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "auth_credentials_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       users: {
         Row: {
           badges: number | null
@@ -19,6 +54,7 @@ export type Database = {
           name: string
           points: number | null
           updated_at: string | null
+          user_type: string
         }
         Insert: {
           badges?: number | null
@@ -29,6 +65,7 @@ export type Database = {
           name: string
           points?: number | null
           updated_at?: string | null
+          user_type?: string
         }
         Update: {
           badges?: number | null
@@ -39,6 +76,7 @@ export type Database = {
           name?: string
           points?: number | null
           updated_at?: string | null
+          user_type?: string
         }
         Relationships: []
       }
@@ -79,7 +117,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      reset_user_points: {
+        Args: { user_id: string }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never

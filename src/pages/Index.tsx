@@ -3,49 +3,93 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import NavBar from "@/components/NavBar";
 import EcoCard from "@/components/EcoCard";
-import Logo from "@/components/Logo";
-import { BookOpen, MapPin, Trash2, ChartBar, Award } from "lucide-react";
+import { BookOpen, MapPin, Trash2, ChartBar, LogOut } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import ResetPoints from "@/components/admin/ResetPoints";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
+
+interface UserData {
+  id: string;
+  name: string;
+  email: string;
+  userType: string;
+  points: number;
+  correctDisposals: number;
+  badges: number;
+}
 
 const Index = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   
-  const [userData, setUserData] = useState({
-    name: "Usuário",
-    points: 0,
-    correctDisposals: 0,
-    badges: 0,
-  });
+  const [userData, setUserData] = useState<UserData | null>(null);
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const { data, error } = await supabase
-          .from('users')
-          .select('*')
-          .limit(1)
-          .single();
-          
-        if (error) {
-          console.error('Erro ao buscar usuário:', error);
-          return;
-        }
-        
-        if (data) {
-          setUserData({
-            name: data.name || "Usuário",
-            points: data.points || 0,
-            correctDisposals: data.correct_disposals || 0,
-            badges: data.badges || 0,
-          });
-        }
-      } catch (error) {
-        console.error('Erro:', error);
-      }
-    };
+    // Verificar se o usuário está logado
+    const userJson = localStorage.getItem("user");
     
-    fetchUserData();
-  }, []);
+    if (!userJson) {
+      navigate("/login");
+      return;
+    }
+    
+    try {
+      const user = JSON.parse(userJson);
+      setUserData(user);
+    } catch (error) {
+      console.error("Erro ao parse do usuário:", error);
+      navigate("/login");
+    }
+  }, [navigate]);
+
+  const fetchUserData = async () => {
+    if (!userData?.id) return;
+    
+    try {
+      const { data, error } = await supabase
+        .from('users')
+        .select('*')
+        .eq('id', userData.id)
+        .single();
+        
+      if (error) {
+        console.error('Erro ao buscar usuário:', error);
+        return;
+      }
+      
+      if (data) {
+        // Atualizar os dados do usuário no state e no localStorage
+        const updatedUser = {
+          ...userData,
+          name: data.name,
+          points: data.points || 0,
+          correctDisposals: data.correct_disposals || 0,
+          badges: data.badges || 0,
+        };
+        
+        setUserData(updatedUser);
+        localStorage.setItem("user", JSON.stringify(updatedUser));
+      }
+    } catch (error) {
+      console.error('Erro:', error);
+    }
+  };
+
+  useEffect(() => {
+    if (userData?.id) {
+      fetchUserData();
+    }
+  }, [userData?.id]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    navigate("/login");
+    toast({
+      title: "Logout realizado",
+      description: "Você saiu da sua conta com sucesso.",
+    });
+  };
 
   const sections = [
     { 
@@ -91,6 +135,10 @@ const Index = () => {
     }
   }, []);
 
+  if (!userData) {
+    return <div>Carregando...</div>;
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
       {/* Header */}
@@ -98,7 +146,12 @@ const Index = () => {
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-2xl font-bold">Olá, {userData.name}!</h1>
-            <p className="opacity-90 mt-1">Bem-vindo ao SeleCollect</p>
+            <p className="opacity-90 mt-1">
+              Bem-vindo ao SeleCollect 
+              <span className="ml-1 px-2 py-0.5 bg-white bg-opacity-20 rounded-full text-xs">
+                {userData.userType === "aluno" ? "Aluno" : "Funcionário"}
+              </span>
+            </p>
           </div>
           <div className="bg-white bg-opacity-20 p-3 rounded-full">
             <img 
@@ -129,7 +182,20 @@ const Index = () => {
 
       {/* Main content */}
       <div className="p-4 mt-6">
-        <h2 className="text-xl font-medium mb-4">Escolha uma opção</h2>
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-medium">Escolha uma opção</h2>
+          
+          <div className="flex gap-2">
+            {userData.userType === "funcionario" && (
+              <ResetPoints userId={userData.id} onReset={fetchUserData} />
+            )}
+            
+            <Button variant="outline" onClick={handleLogout} className="flex items-center gap-2">
+              <LogOut size={16} />
+              Sair
+            </Button>
+          </div>
+        </div>
         
         <div className="grid grid-cols-2 gap-4">
           {sections.map((section) => (
