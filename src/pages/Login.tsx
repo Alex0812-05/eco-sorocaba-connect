@@ -14,7 +14,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 const loginSchema = z.object({
-  email: z.string().email("Email inválido"),
+  email: z.string().min(1, "RA é obrigatório"),
   password: z.string().min(6, "Senha deve ter pelo menos 6 caracteres"),
   userType: z.enum(["aluno", "funcionario"]),
 });
@@ -44,7 +44,7 @@ const Login = () => {
         const { data: userData, error: userError } = await supabase
           .from("users")
           .insert({
-            name: values.email.split("@")[0], // Usa parte do email como nome inicial
+            name: values.email,
             email: values.email,
             user_type: values.userType,
           })
@@ -138,11 +138,11 @@ const Login = () => {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel>RA</FormLabel>
                   <FormControl>
                     <Input
-                      type="email"
-                      placeholder="seu@email.com"
+                      type="text"
+                      placeholder="Seu RA"
                       {...field}
                     />
                   </FormControl>
