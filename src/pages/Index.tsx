@@ -92,6 +92,18 @@ const Index = () => {
     setUserData(userData);
   };
 
+  const handleStaffLoginSuccess = () => {
+    const userJson = localStorage.getItem("user");
+    if (userJson) {
+      try {
+        const user = JSON.parse(userJson);
+        setUserData(user);
+      } catch (error) {
+        console.error("Erro ao parse do usuário:", error);
+      }
+    }
+  };
+
   const handleLogout = () => {
     setUserData(null);
   };
@@ -114,17 +126,7 @@ const Index = () => {
 
           {showStaffLogin ? (
             <div className="space-y-4">
-              <StaffLogin onLoginSuccess={() => {
-                const userJson = localStorage.getItem("user");
-                if (userJson) {
-                  try {
-                    const user = JSON.parse(userJson);
-                    setUserData(user);
-                  } catch (error) {
-                    console.error("Erro ao parse do usuário:", error);
-                  }
-                }
-              }} />
+              <StaffLogin onLoginSuccess={handleStaffLoginSuccess} />
               <Button 
                 variant="link" 
                 className="w-full" 

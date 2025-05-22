@@ -11,8 +11,8 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 const studentLoginSchema = z.object({
-  email: z.string().min(1, "RA é obrigatório"),
-  password: z.string().min(6, "Senha deve ter pelo menos 6 caracteres"),
+  ra: z.string().min(1, "RA é obrigatório"),
+  password: z.string().min(1, "Senha é obrigatória"),
 });
 
 type StudentLoginFormValues = z.infer<typeof studentLoginSchema>;
@@ -29,7 +29,7 @@ const StudentLogin = ({ onLoginSuccess, onShowStaffLogin }: StudentLoginProps) =
   const form = useForm<StudentLoginFormValues>({
     resolver: zodResolver(studentLoginSchema),
     defaultValues: {
-      email: "240000", // Default student RA
+      ra: "240000", // Default student RA
       password: "1234",
     },
   });
@@ -41,7 +41,7 @@ const StudentLogin = ({ onLoginSuccess, onShowStaffLogin }: StudentLoginProps) =
       const { data, error } = await supabase
         .from("auth_credentials")
         .select("*, users:user_id(*)")
-        .eq("email", values.email)
+        .eq("email", values.ra)
         .eq("password", values.password)
         .single();
 
@@ -92,7 +92,7 @@ const StudentLogin = ({ onLoginSuccess, onShowStaffLogin }: StudentLoginProps) =
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <FormField
             control={form.control}
-            name="email"
+            name="ra"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>RA</FormLabel>
@@ -124,8 +124,6 @@ const StudentLogin = ({ onLoginSuccess, onShowStaffLogin }: StudentLoginProps) =
             )}
           />
           
-          <input type="hidden" name="userType" value="aluno" />
-
           <Button type="submit" className="w-full" disabled={loading}>
             {loading ? (
               <>

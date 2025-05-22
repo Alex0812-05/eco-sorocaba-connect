@@ -5,15 +5,14 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 const staffLoginSchema = z.object({
-  email: z.string().min(1, "RA é obrigatório"),
-  password: z.string().min(6, "Senha deve ter pelo menos 6 caracteres"),
+  ra: z.string().min(1, "RA é obrigatório"),
+  password: z.string().min(1, "Senha é obrigatória"),
 });
 
 type StaffLoginFormValues = z.infer<typeof staffLoginSchema>;
@@ -29,7 +28,7 @@ const StaffLogin = ({ onLoginSuccess }: StaffLoginProps) => {
   const form = useForm<StaffLoginFormValues>({
     resolver: zodResolver(staffLoginSchema),
     defaultValues: {
-      email: "249098", // Default staff RA
+      ra: "249098", // Default staff RA
       password: "1234",
     },
   });
@@ -41,7 +40,7 @@ const StaffLogin = ({ onLoginSuccess }: StaffLoginProps) => {
       const { data, error } = await supabase
         .from("auth_credentials")
         .select("*, users:user_id(*)")
-        .eq("email", values.email)
+        .eq("email", values.ra)
         .eq("password", values.password)
         .single();
 
@@ -90,7 +89,7 @@ const StaffLogin = ({ onLoginSuccess }: StaffLoginProps) => {
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <FormField
             control={form.control}
-            name="email"
+            name="ra"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>RA</FormLabel>
