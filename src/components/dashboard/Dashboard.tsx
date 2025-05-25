@@ -62,14 +62,16 @@ const Dashboard = ({ userType }: DashboardProps) => {
               <RotateCcw size={16} />
             </Button>
             
-            <Button 
-              onClick={handleStaffAreaClick}
-              className="flex items-center gap-2"
-              variant="outline"
-            >
-              <Users size={16} />
-              Área do Funcionário
-            </Button>
+            {userType === 'funcionario' && (
+              <Button 
+                onClick={handleStaffAreaClick}
+                className="flex items-center gap-2"
+                variant="outline"
+              >
+                <Users size={16} />
+                Área do Funcionário
+              </Button>
+            )}
           </div>
         </div>
       </div>
