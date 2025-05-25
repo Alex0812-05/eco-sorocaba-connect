@@ -11,6 +11,7 @@ import EducacaoAmbiental from "./pages/EducacaoAmbiental";
 import PontosColeta from "./pages/PontosColeta";
 import DescarteResiduo from "./pages/DescarteResiduo";
 import Estatisticas from "./pages/Estatisticas";
+import AreaFuncionario from "./pages/AreaFuncionario";
 
 const queryClient = new QueryClient();
 
@@ -27,6 +28,7 @@ const App = () => (
           <Route path="/coleta" element={<PontosColeta />} />
           <Route path="/descarte" element={<DescarteResiduo />} />
           <Route path="/estatisticas" element={<Estatisticas />} />
+          <Route path="/area-funcionario" element={<AreaFuncionario />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
