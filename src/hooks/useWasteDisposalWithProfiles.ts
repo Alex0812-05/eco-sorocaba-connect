@@ -3,25 +3,13 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { WasteType } from "@/components/waste/WasteData";
+import { useUserProfile } from "@/hooks/useUserProfile";
 
 export const useWasteDisposalWithProfiles = () => {
   const [selectedType, setSelectedType] = useState<string | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [currentProfile, setCurrentProfile] = useState<any>(null);
+  const { currentProfile, updateProfile } = useUserProfile();
   const { toast } = useToast();
-
-  useEffect(() => {
-    // Get current profile from localStorage
-    const userJson = localStorage.getItem("user");
-    if (userJson) {
-      try {
-        const user = JSON.parse(userJson);
-        setCurrentProfile(user);
-      } catch (error) {
-        console.error("Erro ao parsear dados do usuário:", error);
-      }
-    }
-  }, []);
 
   const handleDiscard = async (wasteType: WasteType) => {
     if (!currentProfile) {
@@ -36,35 +24,13 @@ export const useWasteDisposalWithProfiles = () => {
     const pointsEarned = wasteType.points;
     
     try {
-      // Get user base ID
-      const userBaseId = localStorage.getItem('userBaseId');
-      const userType = localStorage.getItem('userType');
+      console.log('Iniciando descarte para perfil:', currentProfile.id);
       
-      if (!userBaseId || !userType) {
-        throw new Error('Dados de usuário não encontrados');
-      }
-
-      // Get current profile from database
-      const { data: profile, error: profileError } = await supabase
-        .from('user_profiles')
-        .select('*')
-        .eq('user_base_id', userBaseId)
-        .eq('profile_type', userType)
-        .single();
-
-      if (profileError) {
-        console.error('Erro ao buscar perfil:', profileError);
-        // Fallback to local handling
-        handleLocalDiscard(pointsEarned);
-        return;
-      }
-
       // Record waste disposal
       const { error: disposalError } = await supabase
         .from('waste_disposals')
         .insert([{
-          profile_id: profile.id,
-          user_id: profile.id, // Maintaining compatibility
+          profile_id: currentProfile.id,
           waste_type: wasteType.id,
           points_earned: pointsEarned
         }]);
@@ -76,33 +42,20 @@ export const useWasteDisposalWithProfiles = () => {
       }
 
       // Update profile points
-      const newPoints = profile.points + pointsEarned;
-      const newDisposals = profile.correct_disposals + 1;
+      const newPoints = currentProfile.points + pointsEarned;
+      const newDisposals = currentProfile.correct_disposals + 1;
 
-      const { error: updateError } = await supabase
-        .from('user_profiles')
-        .update({
-          points: newPoints,
-          correct_disposals: newDisposals,
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', profile.id);
+      console.log('Atualizando pontos:', {
+        pontos_antigos: currentProfile.points,
+        pontos_ganhos: pointsEarned,
+        pontos_novos: newPoints
+      });
 
-      if (updateError) {
-        console.error('Erro ao atualizar pontos:', updateError);
-        handleLocalDiscard(pointsEarned);
-        return;
-      }
-
-      // Update local state
-      const updatedUser = {
-        ...currentProfile,
+      // Update the profile in the database
+      await updateProfile({
         points: newPoints,
-        correctDisposals: newDisposals
-      };
-      
-      setCurrentProfile(updatedUser);
-      localStorage.setItem("user", JSON.stringify(updatedUser));
+        correct_disposals: newDisposals
+      });
       
       toast({
         title: "Descarte registrado!",
@@ -120,18 +73,23 @@ export const useWasteDisposalWithProfiles = () => {
   };
 
   const handleLocalDiscard = (pointsEarned: number) => {
+    if (!currentProfile) return;
+    
     // Fallback to local storage handling
     const newPoints = currentProfile.points + pointsEarned;
-    const newDisposals = currentProfile.correctDisposals + 1;
+    const newDisposals = currentProfile.correct_disposals + 1;
     
-    const updatedUser = {
-      ...currentProfile,
+    console.log('Fallback local - atualizando pontos:', {
+      pontos_antigos: currentProfile.points,
+      pontos_ganhos: pointsEarned,
+      pontos_novos: newPoints
+    });
+    
+    // Update via the useUserProfile hook
+    updateProfile({
       points: newPoints,
-      correctDisposals: newDisposals
-    };
-    
-    setCurrentProfile(updatedUser);
-    localStorage.setItem("user", JSON.stringify(updatedUser));
+      correct_disposals: newDisposals
+    });
     
     toast({
       title: "Descarte registrado!",

@@ -15,28 +15,18 @@ interface DashboardProps {
 
 const Dashboard = ({ userType }: DashboardProps) => {
   const navigate = useNavigate();
-  const [userPoints, setUserPoints] = useState(0);
-  const [userName, setUserName] = useState('');
   const { currentProfile } = useUserProfile();
-
-  useEffect(() => {
-    // Get user data from localStorage or current profile
-    if (currentProfile) {
-      setUserPoints(currentProfile.points || 0);
-      setUserName(currentProfile.name || (userType === 'funcionario' ? 'Funcionário' : 'Aluno'));
-    } else {
-      const userData = localStorage.getItem('user');
-      if (userData) {
-        const user = JSON.parse(userData);
-        setUserPoints(user.points || 0);
-        setUserName(user.name || (userType === 'funcionario' ? 'Funcionário' : 'Aluno'));
-      }
-    }
-  }, [userType, currentProfile]);
 
   const handleStaffAreaClick = () => {
     navigate('/area-funcionario');
   };
+
+  // Use currentProfile data directly for real-time updates
+  const userPoints = currentProfile?.points || 0;
+  const userName = currentProfile?.name || (userType === 'funcionario' ? 'Funcionário' : 'Aluno');
+
+  console.log('Dashboard - pontos atuais:', userPoints);
+  console.log('Dashboard - perfil atual:', currentProfile);
 
   return (
     <div className="min-h-screen bg-gray-50 pb-20">

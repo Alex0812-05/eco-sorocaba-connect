@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -49,7 +50,11 @@ export const useUserProfile = () => {
         .single();
 
       if (existingProfile) {
-        setCurrentProfile(existingProfile);
+        const typedProfile: UserProfile = {
+          ...existingProfile,
+          profile_type: existingProfile.profile_type as 'aluno' | 'funcionario'
+        };
+        setCurrentProfile(typedProfile);
         // Update localStorage with current profile data
         localStorage.setItem('user', JSON.stringify({
           id: existingProfile.id,
@@ -89,7 +94,11 @@ export const useUserProfile = () => {
 
       if (error) throw error;
 
-      setCurrentProfile(data);
+      const typedProfile: UserProfile = {
+        ...data,
+        profile_type: data.profile_type as 'aluno' | 'funcionario'
+      };
+      setCurrentProfile(typedProfile);
       localStorage.setItem('user', JSON.stringify({
         id: data.id,
         name: data.name,
@@ -153,7 +162,11 @@ export const useUserProfile = () => {
 
       if (error) throw error;
 
-      setCurrentProfile(data);
+      const typedProfile: UserProfile = {
+        ...data,
+        profile_type: data.profile_type as 'aluno' | 'funcionario'
+      };
+      setCurrentProfile(typedProfile);
       
       // Update localStorage
       const userData = JSON.parse(localStorage.getItem('user') || '{}');
