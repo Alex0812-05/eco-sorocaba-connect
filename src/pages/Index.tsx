@@ -3,10 +3,12 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Dashboard from "@/components/dashboard/Dashboard";
 import UserTypeSelector from "@/components/UserTypeSelector";
+import { useUserProfile } from "@/hooks/useUserProfile";
 
 const Index = () => {
   const navigate = useNavigate();
   const [userType, setUserType] = useState<string | null>(null);
+  const { loadUserProfile } = useUserProfile();
 
   const openOnboarding = () => {
     navigate("/onboarding");
@@ -27,20 +29,12 @@ const Index = () => {
     }
   }, []);
 
-  const handleUserTypeSelect = (type: string) => {
+  const handleUserTypeSelect = async (type: string) => {
     setUserType(type);
     localStorage.setItem('userType', type);
     
-    // Create a mock user for the session
-    const mockUser = {
-      id: `${type}_${Date.now()}`,
-      name: type === 'funcionario' ? 'Funcionário' : 'Aluno',
-      userType: type,
-      points: 0,
-      correctDisposals: 0,
-      badges: 0
-    };
-    localStorage.setItem('user', JSON.stringify(mockUser));
+    // Load the profile for this user type
+    await loadUserProfile(type);
   };
 
   // If user type is not selected, show selector

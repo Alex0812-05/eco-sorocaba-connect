@@ -1,11 +1,13 @@
 
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Users, RotateCcw } from 'lucide-react';
+import { Users } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import NavBar from '@/components/NavBar';
 import SectionGrid from './SectionGrid';
 import DailyTip from './DailyTip';
+import ProfileSwitcher from '@/components/ProfileSwitcher';
+import { useUserProfile } from '@/hooks/useUserProfile';
 
 interface DashboardProps {
   userType?: string;
@@ -15,25 +17,25 @@ const Dashboard = ({ userType }: DashboardProps) => {
   const navigate = useNavigate();
   const [userPoints, setUserPoints] = useState(0);
   const [userName, setUserName] = useState('');
+  const { currentProfile } = useUserProfile();
 
   useEffect(() => {
-    // Get user data from localStorage
-    const userData = localStorage.getItem('user');
-    if (userData) {
-      const user = JSON.parse(userData);
-      setUserPoints(user.points || 0);
-      setUserName(user.name || (userType === 'funcionario' ? 'Funcionário' : 'Aluno'));
+    // Get user data from localStorage or current profile
+    if (currentProfile) {
+      setUserPoints(currentProfile.points || 0);
+      setUserName(currentProfile.name || (userType === 'funcionario' ? 'Funcionário' : 'Aluno'));
+    } else {
+      const userData = localStorage.getItem('user');
+      if (userData) {
+        const user = JSON.parse(userData);
+        setUserPoints(user.points || 0);
+        setUserName(user.name || (userType === 'funcionario' ? 'Funcionário' : 'Aluno'));
+      }
     }
-  }, [userType]);
+  }, [userType, currentProfile]);
 
   const handleStaffAreaClick = () => {
     navigate('/area-funcionario');
-  };
-
-  const resetUserType = () => {
-    localStorage.removeItem('userType');
-    localStorage.removeItem('user');
-    window.location.reload();
   };
 
   return (
@@ -54,13 +56,7 @@ const Dashboard = ({ userType }: DashboardProps) => {
           </div>
           
           <div className="flex items-center gap-2">
-            <Button 
-              onClick={resetUserType}
-              variant="ghost"
-              size="sm"
-            >
-              <RotateCcw size={16} />
-            </Button>
+            <ProfileSwitcher />
             
             {userType === 'funcionario' && (
               <Button 

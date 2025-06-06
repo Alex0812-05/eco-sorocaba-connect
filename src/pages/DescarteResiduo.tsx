@@ -7,7 +7,7 @@ import WasteDetails from "@/components/waste/WasteDetails";
 import WasteTips from "@/components/waste/WasteTips";
 import ConfirmationDialog from "@/components/waste/ConfirmationDialog";
 import { wasteTypes } from "@/components/waste/WasteData";
-import { useWasteDisposal } from "@/hooks/useWasteDisposal";
+import { useWasteDisposalWithProfiles } from "@/hooks/useWasteDisposalWithProfiles";
 
 const DescarteResiduo = () => {
   const {
@@ -16,7 +16,7 @@ const DescarteResiduo = () => {
     isDialogOpen,
     setIsDialogOpen,
     handleDiscard
-  } = useWasteDisposal();
+  } = useWasteDisposalWithProfiles();
 
   // Encontra o tipo de resíduo selecionado
   const selectedWasteType = wasteTypes.find(type => type.id === selectedType);

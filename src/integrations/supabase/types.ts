@@ -44,6 +44,45 @@ export type Database = {
           },
         ]
       }
+      user_profiles: {
+        Row: {
+          badges: number | null
+          correct_disposals: number | null
+          created_at: string | null
+          email: string | null
+          id: string
+          name: string
+          points: number | null
+          profile_type: string
+          updated_at: string | null
+          user_base_id: string
+        }
+        Insert: {
+          badges?: number | null
+          correct_disposals?: number | null
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          name: string
+          points?: number | null
+          profile_type: string
+          updated_at?: string | null
+          user_base_id: string
+        }
+        Update: {
+          badges?: number | null
+          correct_disposals?: number | null
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          name?: string
+          points?: number | null
+          profile_type?: string
+          updated_at?: string | null
+          user_base_id?: string
+        }
+        Relationships: []
+      }
       users: {
         Row: {
           badges: number | null
@@ -53,6 +92,7 @@ export type Database = {
           id: string
           name: string
           points: number | null
+          profile_type: string | null
           updated_at: string | null
           user_type: string
         }
@@ -64,6 +104,7 @@ export type Database = {
           id?: string
           name: string
           points?: number | null
+          profile_type?: string | null
           updated_at?: string | null
           user_type?: string
         }
@@ -75,6 +116,7 @@ export type Database = {
           id?: string
           name?: string
           points?: number | null
+          profile_type?: string | null
           updated_at?: string | null
           user_type?: string
         }
@@ -85,6 +127,7 @@ export type Database = {
           created_at: string | null
           id: string
           points_earned: number
+          profile_id: string | null
           user_id: string
           waste_type: string
         }
@@ -92,6 +135,7 @@ export type Database = {
           created_at?: string | null
           id?: string
           points_earned: number
+          profile_id?: string | null
           user_id: string
           waste_type: string
         }
@@ -99,10 +143,18 @@ export type Database = {
           created_at?: string | null
           id?: string
           points_earned?: number
+          profile_id?: string | null
           user_id?: string
           waste_type?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "fk_waste_disposals_profile"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "user_profiles"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "waste_disposals_user_id_fkey"
             columns: ["user_id"]
@@ -114,9 +166,23 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      waste_statistics: {
+        Row: {
+          disposal_count: number | null
+          profile_type: string | null
+          total_points_from_type: number | null
+          user_base_id: string | null
+          user_name: string | null
+          waste_type: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
+      migrate_existing_data: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
       reset_user_points: {
         Args: { user_id: string }
         Returns: undefined
